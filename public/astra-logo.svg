@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 44" width="150" height="30">
+  <!-- swoosh -->
+  <path d="M6 30c6-16 22-24 40-24-14 4-24 14-28 28-1 2-4 2-6 1-4-2-7-3-6-5z" fill="#e65100"/>
+  <path d="M10 32c7-13 20-20 34-21-11 5-19 13-24 24-1 2-3 2-5 1-3-1-6-2-5-4z" fill="#4a4a4a" opacity="0.85"/>
+  <!-- ASTRA -->
+  <text x="48" y="25" font-family="Arial, sans-serif" font-size="20" font-weight="800" fill="#4a4a4a">ASTRA</text>
+  <text x="118" y="25" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#555">Infra</text>
+  <line x1="152" y1="10" x2="152" y2="26" stroke="#e65100" stroke-width="1.5"/>
+  <text x="157" y="25" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#e65100">Toll Road</text>
+</svg>

@@ -161,24 +161,30 @@ function astraCards(title, rows, total, card) {
 function astraReceipt(t) {
   const r = t.raw || {};
   const gerbang = (r.gb_tujuan || t.gate || "").toUpperCase();
-  const asal = r.gb_asal ? `Dari ${esc(r.gb_asal)}` : "INTEGRASI";
-  const pesan = r.pultol === 1 || /overload/i.test(r.pesan || "")
+  // gardu_type [0,1,3] = integrasi (tanpa "Dari gerbang")
+  const isIntegrasi = [0, 1, 3].includes(r.gardu_type);
+  const asalLine = isIntegrasi
+    ? `Golongan ${esc(t.vehicleClass || "-")}, INTEGRASI`
+    : `Golongan ${esc(t.vehicleClass || "-")}, Dari ${esc(r.gb_asal || "-")}`;
+  const overload = r.pultol === 1;
+  const pesan = overload
     ? "Kendaraan Overload Tidak Patuh<br/>Anda Harus Keluar Gerbang Balaraja Timur<br/>Terima Kasih"
     : "Terima Kasih";
   return `
     <article class="astra-struk">
-      <div class="ar-logo"><span class="ar-astra">ASTRA</span> <span class="ar-sub">Infra | Toll Road</span></div>
+      <div class="ar-wm">ASTRA Infra</div>
+      <div class="ar-logo"><img src="/astra-logo.svg" alt="ASTRA Infra Toll Road" /></div>
       <div class="ar-ruas">TANGERANG-MERAK</div>
       <div class="ar-call">Layanan Toll (Free Call) : ${esc(r.freecall || "0-800-1-777-879")}</div>
       <hr/>
       <div class="ar-gerbang">GERBANG ${esc(gerbang)}</div>
       <div class="ar-when">${esc(tanggalIndo(t.timestampISO))}</div>
-      <div class="ar-gol">Golongan ${esc(t.vehicleClass || "-")}, ${asal}</div>
+      <div class="ar-gol">${asalLine}</div>
       <hr/>
       <div class="ar-row"><span>BANK</span><span>${esc(t.bank || "-")}</span></div>
       <div class="ar-row"><span>No. Kartu</span><span>${esc(fmtCardNo(r.no_kartu || ""))}</span></div>
-      <div class="ar-row"><span>Tarif</span><span>Rp ${esc(formatNum(t.amount))}</span></div>
-      <div class="ar-row"><span>Sisa Saldo</span><span>Rp ${esc(formatNum(t.endingBalance))}</span></div>
+      <div class="ar-row"><span>Tarif</span><span>Rp. ${esc(formatNum(t.amount))}</span></div>
+      <div class="ar-row"><span>Sisa Saldo</span><span>Rp. ${esc(formatNum(t.endingBalance))}</span></div>
       <hr/>
       <div class="ar-msg">${pesan}</div>
     </article>`;

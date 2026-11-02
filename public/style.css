@@ -81,23 +81,30 @@ button:disabled { opacity: 0.55; cursor: progress; }
 .op-block.astra .op-sum { color: #ffe3cf; }
 .astra-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; padding: 16px; }
 .astra-struk {
-  border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px;
-  font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #333; background: #fff; line-height: 1.5;
+  position: relative; overflow: hidden;
+  border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px;
+  font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #3a3a3a; background: #fff; line-height: 1.6;
 }
-.astra-struk hr { border: none; border-top: 1px dashed #c9c0b8; margin: 8px 0; }
-.ar-logo { text-align: center; font-size: 14px; }
-.ar-logo .ar-astra { color: var(--orange); font-weight: 800; letter-spacing: 0.04em; }
-.ar-logo .ar-sub { color: #555; font-weight: 600; }
-.ar-ruas { text-align: center; font-size: 10px; letter-spacing: 0.08em; color: #777; }
-.ar-call { text-align: center; font-size: 10px; color: #999; margin-top: 2px; }
-.ar-gerbang { font-weight: 700; font-size: 13px; color: #222; }
-.ar-when { font-size: 11px; color: #666; margin: 2px 0; }
-.ar-gol { font-size: 11px; color: #444; }
-.ar-row { display: flex; justify-content: space-between; gap: 10px; }
-.ar-row span:first-child { color: #666; }
-.ar-row span:last-child { font-weight: 600; color: #222; }
-.ar-msg { text-align: center; font-size: 11px; color: #777; }
-.astra-total { text-align: right; padding: 14px 20px; font-size: 16px; font-weight: 800; border-top: 1px solid var(--line); }
+.astra-struk hr { border: none; border-top: 1px solid #e3ddd6; margin: 10px 0; }
+/* watermark miring ala struk asli */
+.ar-wm {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 800; color: rgba(230,81,0,0.06);
+  transform: rotate(-20deg); pointer-events: none; letter-spacing: 0.05em; z-index: 0;
+}
+.astra-struk > *:not(.ar-wm) { position: relative; z-index: 1; }
+.ar-logo { text-align: center; margin-bottom: 2px; }
+.ar-logo img { height: 28px; width: auto; }
+.ar-ruas { text-align: center; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: #4a4a4a; margin-top: -4px; }
+.ar-call { text-align: center; font-size: 11px; color: #888; margin-top: 3px; }
+.ar-gerbang { font-weight: 400; font-size: 15px; color: #333; }
+.ar-when { font-size: 13px; color: #555; margin: 3px 0; }
+.ar-gol { font-size: 13px; color: #555; }
+.ar-row { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+.ar-row span:first-child { color: #555; }
+.ar-row span:last-child { color: #333; }
+.ar-msg { text-align: center; font-size: 13px; color: #555; line-height: 1.7; }
+.astra-total { text-align: right; padding: 16px 20px; font-size: 18px; font-weight: 700; border-top: 1px solid var(--line); }
 
 /* Serbaraja: replika struk asli */
 .op-block.serbaraja .op-head { background: var(--sb-blue); color: #fff; }
