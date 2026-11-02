@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TolStruk — Kumpulkan Struk Tol dari Nomor Kartu</title>
+<meta name="description" content="Cek dan kumpulkan struk digital transaksi tol dari berbagai operator (Astra Tol, BSD, Serbaraja, JTD, Tol Makassar) cukup dengan nomor kartu e-money." />
+<link rel="icon" type="image/svg+xml" href="/logo.svg" />
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="site-head">
+    <div class="brand">
+      <img src="/logo.svg" width="36" height="36" alt="TolStruk" />
+      <span>Tol<strong>Struk</strong></span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Kumpulkan struk tol kamu<br />dari satu nomor kartu</h1>
+      <p>Masukkan nomor kartu e-money dan rentang tanggal. TolStruk menarik struk digital dari beberapa operator tol sekaligus.</p>
+    </section>
+
+    <form id="form" class="card">
+      <label>
+        Nomor kartu e-money
+        <input id="card" inputmode="numeric" autocomplete="off" placeholder="16 digit di depan kartu" required />
+      </label>
+      <div class="row">
+        <label>Dari tanggal<input id="from" type="date" required /></label>
+        <label>Sampai tanggal<input id="to" type="date" required /></label>
+      </div>
+      <button id="submit" type="submit">Cari Struk</button>
+      <p class="hint">Hanya untuk kartu milikmu sendiri. TolStruk tidak menyimpan nomor kartu atau datamu.</p>
+    </form>
+
+    <section id="status" class="status" hidden></section>
+    <section id="results" class="results"></section>
+  </main>
+
+  <footer class="site-foot">
+    <p>TolStruk menggunakan halaman struk publik tiap operator. Cakupan: transaksi di ruas tol yang didukung saja.</p>
+    <p class="ops" id="ops-note"></p>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

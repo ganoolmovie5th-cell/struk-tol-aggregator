@@ -1,0 +1,9 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="48" height="48" rx="11" fill="#E65100"/>
+  <!-- struk/receipt -->
+  <path d="M15 11h18a2 2 0 0 1 2 2v24l-3-2-3 2-3-2-3 2-3-2-3 2-3-2-3 2V13a2 2 0 0 1 2-2Z" fill="#fff"/>
+  <!-- garis teks struk -->
+  <rect x="18" y="17" width="12" height="2.2" rx="1.1" fill="#E65100"/>
+  <rect x="18" y="22" width="12" height="2.2" rx="1.1" fill="#FFB074"/>
+  <rect x="18" y="27" width="8" height="2.2" rx="1.1" fill="#FFB074"/>
+</svg>

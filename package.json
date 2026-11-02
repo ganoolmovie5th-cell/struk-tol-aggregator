@@ -1,0 +1,10 @@
+{
+  "name": "struk-tol-aggregator",
+  "version": "1.0.0",
+  "description": "TolStruk — kumpulkan struk digital transaksi tol dari berbagai operator lewat satu nomor kartu e-money.",
+  "type": "module",
+  "scripts": {
+    "cli": "node aggregate.mjs"
+  },
+  "license": "MIT"
+}
