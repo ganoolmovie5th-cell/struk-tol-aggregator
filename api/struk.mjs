@@ -145,13 +145,21 @@ const pick = (obj, ...keys) => {
 
 function mapRow(operator, r) {
   if (Array.isArray(r)) return { operator, raw: r };
+
+  // gate: gabung asal -> tujuan kalau ada (Astra pakai gb_asal/gb_tujuan)
+  const asal = pick(r, "gb_asal", "gerbang_asal");
+  const tujuan = pick(r, "gb_tujuan", "gerbang_tujuan");
+  const gate = asal && tujuan ? `${asal} → ${tujuan}`
+    : tujuan || asal || pick(r, "gardu", "gerbang", "gate", "ruas");
+
   const mapped = {
-    timestamp: pick(r, "tgl_transaksi", "tanggal", "transaksi", "waktu", "timestamp", "date"),
-    gate: pick(r, "gardu", "gardu_type", "gerbang", "gate", "ruas"),
+    timestamp: pick(r, "tgl_transaksi", "waktu_entrance", "tanggal", "transaksi", "waktu", "timestamp", "date"),
+    gate,
     vehicleClass: pick(r, "gol", "golongan", "vehicleClass"),
     amount: pick(r, "tarif", "payment", "amount", "nominal"),
     endingBalance: pick(r, "saldo", "sisa_saldo", "endingBalance", "ending_balance"),
-    receiptNo: pick(r, "resi", "no_resi", "receiptNo", "receipt_numbers"),
+    receiptNo: pick(r, "struk_no", "resi", "no_resi", "receiptNo", "receipt_numbers"),
+    bank: pick(r, "bank"),
   };
   return { operator, ...mapped, timestampISO: parseDate(mapped.timestamp), raw: r };
 }
