@@ -2,6 +2,9 @@
 // Self-contained (semua logic inline) — tidak import file di luar folder api/,
 // supaya dijamin ter-bundle oleh Vercel (hindari ERR_MODULE_NOT_FOUND).
 
+// fetch dengan timeout koneksi (putus kalau operator nggak respon dalam 10s)
+const f = (url, opt = {}) => fetch(url, { signal: AbortSignal.timeout(8000), ...opt });
+
 // ---------------------------------------------------------------- operators
 const OPERATORS = [
   {
@@ -11,7 +14,7 @@ const OPERATORS = [
       form.append("keyword", card);
       form.append("periodeAwal", from);
       form.append("periodeAkhir", to);
-      const res = await fetch("https://astratol.co.id/api/struk", { method: "POST", body: form });
+      const res = await f("https://astratol.co.id/api/struk", { method: "POST", body: form });
       if (!res.ok) throw new Error(`Astra Tol HTTP ${res.status}`);
       const json = await res.json();
       return Array.isArray(json.data) ? json.data : [];
@@ -24,7 +27,7 @@ const OPERATORS = [
       url.searchParams.set("cardNumber", card);
       url.searchParams.set("dateFrom", from);
       url.searchParams.set("dateTo", to);
-      const res = await fetch(url);
+      const res = await f(url);
       if (!res.ok) throw new Error(`Serbaraja HTTP ${res.status}`);
       const json = await res.json();
       return Array.isArray(json) ? json : Array.isArray(json.data) ? json.data : [];
@@ -37,7 +40,7 @@ const OPERATORS = [
       url.searchParams.set("noKartu", card);
       url.searchParams.set("tglAwal", from);
       url.searchParams.set("tglAkhir", to);
-      const res = await fetch(url);
+      const res = await f(url);
       if (!res.ok) throw new Error(`JTD HTTP ${res.status}`);
       const json = await res.json();
       if (json.status !== "success") throw new Error(`JTD: ${json.message || "gagal"}`);
@@ -54,7 +57,7 @@ const OPERATORS = [
       url.searchParams.set("draw", "1");
       url.searchParams.set("start", "0");
       url.searchParams.set("length", "100");
-      const res = await fetch(url, { headers: { "X-Requested-With": "XMLHttpRequest", Accept: "application/json" } });
+      const res = await f(url, { headers: { "X-Requested-With": "XMLHttpRequest", Accept: "application/json" } });
       if (!res.ok) throw new Error(`BSD Tol HTTP ${res.status}`);
       const json = await res.json();
       return Array.isArray(json.data) ? json.data : [];
@@ -67,7 +70,7 @@ const OPERATORS = [
       url.searchParams.set("kartu", card);
       url.searchParams.set("tanggal_awal", from);
       url.searchParams.set("tanggal_akhir", to);
-      const res = await fetch(url, { headers: { "X-Requested-With": "XMLHttpRequest", Accept: "application/json" } });
+      const res = await f(url, { headers: { "X-Requested-With": "XMLHttpRequest", Accept: "application/json" } });
       if (!res.ok) throw new Error(`Tol Makassar HTTP ${res.status}`);
       const json = await res.json();
       if (json.status && json.status !== "success") throw new Error(`Tol Makassar: ${json.message || "gagal"}`);
@@ -77,7 +80,7 @@ const OPERATORS = [
   {
     name: "Citra Persada",
     async fetchStruk(card, from, to) {
-      const res = await fetch("https://struk.citrapersada.co.id/getStruk", {
+      const res = await f("https://struk.citrapersada.co.id/getStruk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ no_kartu: card, tgl_awal: from, tgl_akhir: to }),
@@ -91,7 +94,7 @@ const OPERATORS = [
     name: "JLB",
     async fetchStruk(card, from, to) {
       const base = "https://strukdigital.jlbjorrw1.com/struk";
-      const pageRes = await fetch(base);
+      const pageRes = await f(base);
       if (!pageRes.ok) throw new Error(`JLB page HTTP ${pageRes.status}`);
       const setCookies = pageRes.headers.getSetCookie?.() ?? [];
       const cookie = setCookies.map((c) => c.split(";")[0]).join("; ");
@@ -99,7 +102,7 @@ const OPERATORS = [
       const token = html.match(/name="_token"[^>]*value="([^"]+)"/)?.[1];
       if (!token) throw new Error("JLB: _token tidak ditemukan");
       const body = new URLSearchParams({ _token: token, card_number: card, start_date: from, end_date: to });
-      const res = await fetch(base, {
+      const res = await f(base, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded", ...(cookie ? { Cookie: cookie } : {}) },
         body,
@@ -153,6 +156,14 @@ function mapRow(operator, r) {
   return { operator, ...mapped, timestampISO: parseDate(mapped.timestamp), raw: r };
 }
 
+// batasi tiap operator maksimal N ms — operator yang hang nggak bikin function timeout
+function withTimeout(promise, ms, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(`${label}: timeout ${ms}ms`)), ms)),
+  ]);
+}
+
 // ---------------------------------------------------------------- handler
 export default async function handler(req, res) {
   const { card, from, to } = req.query;
@@ -165,7 +176,9 @@ export default async function handler(req, res) {
     return;
   }
 
-  const settled = await Promise.allSettled(OPERATORS.map((op) => op.fetchStruk(card, from, to)));
+  const settled = await Promise.allSettled(
+    OPERATORS.map((op) => withTimeout(op.fetchStruk(card, from, to), 9000, op.name))
+  );
 
   const perOperator = [];
   const transactions = [];
