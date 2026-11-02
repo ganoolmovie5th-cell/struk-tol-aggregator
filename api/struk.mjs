@@ -8,7 +8,9 @@ const f = (url, opt = {}) => fetch(url, { signal: AbortSignal.timeout(8000), ...
 // ---------------------------------------------------------------- operators
 const OPERATORS = [
   {
+    id: "astra",
     name: "Astra Tol",
+    enabled: true,
     async fetchStruk(card, from, to) {
       const form = new FormData();
       form.append("keyword", card);
@@ -21,7 +23,9 @@ const OPERATORS = [
     },
   },
   {
+    id: "serbaraja",
     name: "Serbaraja",
+    enabled: true,
     async fetchStruk(card, from, to) {
       const url = new URL("https://serbaraja.sinarmasland.com/api/receipt");
       url.searchParams.set("cardNumber", card);
@@ -35,6 +39,8 @@ const OPERATORS = [
   },
   {
     name: "JTD",
+    id: "jtd",
+    enabled: false,
     async fetchStruk(card, from, to) {
       const url = new URL("https://bc01.jtd.co.id/api/jlp/beranda/struk");
       url.searchParams.set("noKartu", card);
@@ -49,6 +55,8 @@ const OPERATORS = [
   },
   {
     name: "BSD Tol",
+    id: "bsd",
+    enabled: false,
     async fetchStruk(card, from, to) {
       const url = new URL("https://bsdtol.com/struk");
       url.searchParams.set("kartu", card);
@@ -65,6 +73,8 @@ const OPERATORS = [
   },
   {
     name: "Tol Makassar",
+    id: "makassar",
+    enabled: false,
     async fetchStruk(card, from, to) {
       const url = new URL("https://tolmakassar.com/struk");
       url.searchParams.set("kartu", card);
@@ -79,6 +89,8 @@ const OPERATORS = [
   },
   {
     name: "Citra Persada",
+    id: "citra",
+    enabled: false,
     async fetchStruk(card, from, to) {
       const res = await f("https://struk.citrapersada.co.id/getStruk", {
         method: "POST",
@@ -92,6 +104,8 @@ const OPERATORS = [
   },
   {
     name: "JLB",
+    id: "jlb",
+    enabled: false,
     async fetchStruk(card, from, to) {
       const base = "https://strukdigital.jlbjorrw1.com/struk";
       const pageRes = await f(base);
@@ -143,16 +157,18 @@ const pick = (obj, ...keys) => {
   return undefined;
 };
 
-function mapRow(operator, r) {
-  if (Array.isArray(r)) return { operator, raw: r };
+function mapRow(operatorId, operator, r) {
+  if (Array.isArray(r)) return { operatorId, operator, raw: r };
 
-  // gate: gabung asal -> tujuan. Astra: gb_asal/gb_tujuan. Serbaraja: GerbangAsal/GerbangTujuan.
+  // gate asal/tujuan. Astra: gb_asal/gb_tujuan. Serbaraja: GerbangAsal/GerbangTujuan.
   const asal = pick(r, "gb_asal", "GerbangAsal", "gerbang_asal");
   const tujuan = pick(r, "gb_tujuan", "GerbangTujuan", "gerbang_tujuan");
   const gate = asal && tujuan ? `${asal} → ${tujuan}`
     : tujuan || asal || pick(r, "gardu", "gerbang", "gate", "ruas");
 
   const mapped = {
+    entryGate: asal,
+    exitGate: tujuan,
     timestamp: pick(r, "tgl_transaksi", "DateTime", "waktu_entrance", "tanggal", "transaksi", "waktu", "timestamp", "date"),
     gate,
     vehicleClass: pick(r, "gol", "Golongan", "golongan", "vehicleClass"),
@@ -161,7 +177,7 @@ function mapRow(operator, r) {
     receiptNo: pick(r, "struk_no", "NoResi", "resi", "no_resi", "receiptNo", "receipt_numbers"),
     bank: pick(r, "bank", "Bank"),
   };
-  return { operator, ...mapped, timestampISO: parseDate(mapped.timestamp), raw: r };
+  return { operatorId, operator, ...mapped, timestampISO: parseDate(mapped.timestamp), raw: r };
 }
 
 // batasi tiap operator maksimal N ms — operator yang hang nggak bikin function timeout
@@ -174,7 +190,15 @@ function withTimeout(promise, ms, label) {
 
 // ---------------------------------------------------------------- handler
 export default async function handler(req, res) {
-  const { card, from, to } = req.query;
+  // GET /api/providers -> daftar provider + status enabled (buat render checkbox)
+  if (req.query.list === "providers") {
+    res.status(200).json({
+      providers: OPERATORS.map((o) => ({ id: o.id, name: o.name, enabled: !!o.enabled })),
+    });
+    return;
+  }
+
+  const { card, from, to, providers } = req.query;
   if (!card || !from || !to) {
     res.status(400).json({ error: "Parameter wajib: card, from, to (YYYY-MM-DD)." });
     return;
@@ -184,20 +208,24 @@ export default async function handler(req, res) {
     return;
   }
 
+  // pilih operator: hanya yang enabled, dan (kalau ada param providers) yang dipilih user
+  const wanted = providers ? String(providers).split(",").filter(Boolean) : null;
+  const active = OPERATORS.filter((o) => o.enabled && (!wanted || wanted.includes(o.id)));
+
   const settled = await Promise.allSettled(
-    OPERATORS.map((op) => withTimeout(op.fetchStruk(card, from, to), 9000, op.name))
+    active.map((op) => withTimeout(op.fetchStruk(card, from, to), 9000, op.name))
   );
 
   const perOperator = [];
   const transactions = [];
   settled.forEach((r, i) => {
-    const op = OPERATORS[i];
+    const op = active[i];
     if (r.status === "fulfilled") {
-      const rows = r.value.map((row) => mapRow(op.name, row));
+      const rows = r.value.map((row) => mapRow(op.id, op.name, row));
       transactions.push(...rows);
-      perOperator.push({ operator: op.name, count: rows.length });
+      perOperator.push({ id: op.id, operator: op.name, count: rows.length });
     } else {
-      perOperator.push({ operator: op.name, error: r.reason?.message || "gagal" });
+      perOperator.push({ id: op.id, operator: op.name, error: r.reason?.message || "gagal" });
     }
   });
 
