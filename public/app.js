@@ -23,22 +23,52 @@ function fmtTime(t) {
   return s.replace("T", " ");
 }
 
-// ---- load daftar provider -> render checkbox (disabled kalau belum ada data)
+const HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+// "Kamis, 22 Oktober 2026 pukul 15.40" — gaya struk Astra
+function tanggalIndo(isoStr) {
+  if (!isoStr) return "";
+  const d = new Date(isoStr);
+  if (isNaN(d)) return isoStr;
+  const jam = `${String(d.getHours()).padStart(2, "0")}.${String(d.getMinutes()).padStart(2, "0")}`;
+  return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()} pukul ${jam}`;
+}
+
+// ---- load daftar provider -> render checkbox + opsi "Semua"
 loadProviders();
 async function loadProviders() {
   try {
     const r = await fetch("/api/struk?list=providers");
     const { providers } = await r.json();
-    provListEl.innerHTML = providers.map((p) => `
-      <label class="prov ${p.enabled ? "" : "disabled"}">
-        <input type="checkbox" value="${p.id}" ${p.enabled ? "checked" : "disabled"} />
-        <span>${esc(p.name)}</span>
-        ${p.enabled ? "" : '<em>segera</em>'}
+    const enabledCount = providers.filter((p) => p.enabled).length;
+    provListEl.innerHTML = `
+      <label class="prov all">
+        <input type="checkbox" id="prov-all" ${enabledCount ? "checked" : "disabled"} />
+        <span>Semua</span>
       </label>
-    `).join("");
+      ${providers.map((p) => `
+        <label class="prov ${p.enabled ? "" : "disabled"}">
+          <input type="checkbox" class="prov-one" value="${p.id}" ${p.enabled ? "checked" : "disabled"} />
+          <span>${esc(p.name)}</span>
+          ${p.enabled ? "" : '<em>segera</em>'}
+        </label>`).join("")}
+    `;
+    wireAllCheckbox();
   } catch {
     provListEl.innerHTML = '<span class="loading-prov">Gagal memuat operator.</span>';
   }
+}
+
+// checkbox "Semua" <-> individual
+function wireAllCheckbox() {
+  const all = document.getElementById("prov-all");
+  const ones = [...provListEl.querySelectorAll(".prov-one:not([disabled])")];
+  all?.addEventListener("change", () => ones.forEach((c) => (c.checked = all.checked)));
+  ones.forEach((c) =>
+    c.addEventListener("change", () => {
+      if (all) all.checked = ones.every((o) => o.checked);
+    })
+  );
 }
 
 form.addEventListener("submit", async (e) => {
@@ -46,7 +76,7 @@ form.addEventListener("submit", async (e) => {
   const card = document.getElementById("card").value.trim();
   const from = document.getElementById("from").value;
   const to = document.getElementById("to").value;
-  const chosen = [...provListEl.querySelectorAll("input:checked")].map((c) => c.value);
+  const chosen = [...provListEl.querySelectorAll(".prov-one:checked")].map((c) => c.value);
 
   if (!/^\d{15,16}$/.test(card)) return showStatus("Nomor kartu harus 15-16 digit.", true);
   if (!chosen.length) return showStatus("Pilih minimal satu operator.", true);
@@ -107,43 +137,74 @@ function blockFor(opId, rows, card) {
   return astraCards(title, rows, total, card);
 }
 
-// --- Astra style: kartu grid, oranye
+// format No. Kartu 7546-0100-1064-4875
+function fmtCardNo(c) {
+  const s = String(c).replace(/\D/g, "");
+  return s.replace(/(\d{4})(?=\d)/g, "$1-");
+}
+
+// --- Astra: replika persis struk asli (header ASTRA Infra, GERBANG, Terima Kasih)
 function astraCards(title, rows, total, card) {
   return `
   <section class="op-block astra">
-    <div class="op-head">
+    <div class="op-head print-hide">
       <h2>${esc(title)}</h2>
       <div class="op-sum">${rows.length} transaksi · Total ${rupiah(total)}</div>
     </div>
     <div class="astra-grid">
-      ${rows.map((t) => `
-        <article class="astra-struk">
-          <div class="no">${esc(card)}</div>
-          <div class="when">${esc(fmtTime(t))}</div>
-          <div class="gate">${esc(t.gate || "-")}</div>
-          <div class="line">${t.bank ? esc(t.bank) + " · " : ""}Gol ${esc(t.vehicleClass || "-")}</div>
-          <div class="line">Tarif <strong>${rupiah(t.amount)}</strong></div>
-          <div class="line">Sisa Saldo ${rupiah(t.endingBalance)}</div>
-          ${t.receiptNo ? `<div class="resi">No. Resi ${esc(t.receiptNo)}</div>` : ""}
-        </article>`).join("")}
+      ${rows.map((t) => astraReceipt(t)).join("")}
     </div>
+    <div class="astra-total">Total Transaksi : ${rupiah(total)}</div>
   </section>`;
 }
 
-// --- Serbaraja style: tabel biru dengan header
+function astraReceipt(t) {
+  const r = t.raw || {};
+  const gerbang = (r.gb_tujuan || t.gate || "").toUpperCase();
+  const asal = r.gb_asal ? `Dari ${esc(r.gb_asal)}` : "INTEGRASI";
+  const pesan = r.pultol === 1 || /overload/i.test(r.pesan || "")
+    ? "Kendaraan Overload Tidak Patuh<br/>Anda Harus Keluar Gerbang Balaraja Timur<br/>Terima Kasih"
+    : "Terima Kasih";
+  return `
+    <article class="astra-struk">
+      <div class="ar-logo"><span class="ar-astra">ASTRA</span> <span class="ar-sub">Infra | Toll Road</span></div>
+      <div class="ar-ruas">TANGERANG-MERAK</div>
+      <div class="ar-call">Layanan Toll (Free Call) : ${esc(r.freecall || "0-800-1-777-879")}</div>
+      <hr/>
+      <div class="ar-gerbang">GERBANG ${esc(gerbang)}</div>
+      <div class="ar-when">${esc(tanggalIndo(t.timestampISO))}</div>
+      <div class="ar-gol">Golongan ${esc(t.vehicleClass || "-")}, ${asal}</div>
+      <hr/>
+      <div class="ar-row"><span>BANK</span><span>${esc(t.bank || "-")}</span></div>
+      <div class="ar-row"><span>No. Kartu</span><span>${esc(fmtCardNo(r.no_kartu || ""))}</span></div>
+      <div class="ar-row"><span>Tarif</span><span>Rp ${esc(formatNum(t.amount))}</span></div>
+      <div class="ar-row"><span>Sisa Saldo</span><span>Rp ${esc(formatNum(t.endingBalance))}</span></div>
+      <hr/>
+      <div class="ar-msg">${pesan}</div>
+    </article>`;
+}
+
+// --- Serbaraja: replika tabel struk asli
 function serbarajaTable(title, rows, total, card) {
   const saldo = rows[0]?.endingBalance;
+  const company = rows[0]?.raw?.Company || "Trans Bumi Serbaraja";
   return `
   <section class="op-block serbaraja">
-    <div class="op-head">
+    <div class="op-head print-hide">
       <h2>${esc(title)}</h2>
       <div class="op-sum">${rows.length} transaksi · Total ${rupiah(total)} · Saldo ${rupiah(saldo)}</div>
     </div>
-    <div class="sb-wrap">
+    <div class="sb-receipt">
+      <div class="sb-logo">serbaraja</div>
+      <div class="sb-meta">
+        <div><strong>TRANSACTIONS</strong> ${rows.length}</div>
+        <div><strong>TOTAL FARE</strong> ${rupiah(total)}</div>
+        <div><strong>LATEST BALANCE</strong> <span class="bal">${rupiah(saldo)}</span></div>
+      </div>
       <table class="sb-table">
         <thead><tr>
-          <th>#</th><th>Tanggal & Waktu</th><th>Gerbang Masuk</th><th>Gerbang Keluar</th>
-          <th>Gol</th><th>Bank</th><th>Tarif</th><th>Saldo</th><th>No. Resi</th>
+          <th>#</th><th>DATE &amp; TIME</th><th>ENTRY GATE</th><th>EXIT GATE</th>
+          <th>CLASS</th><th>BANK</th><th>FARE</th><th>BALANCE</th><th>NO. RESI</th>
         </tr></thead>
         <tbody>
           ${rows.map((t, i) => `<tr>
@@ -159,7 +220,12 @@ function serbarajaTable(title, rows, total, card) {
           </tr>`).join("")}
         </tbody>
       </table>
+      <div class="sb-note">Card: ${esc(fmtCardNo(card))} · ${esc(company)}</div>
     </div>
-    <div class="sb-card-note">Card: ${esc(card)} · ${esc(rows[0]?.raw?.Company || "Serbaraja")}</div>
   </section>`;
+}
+
+function formatNum(v) {
+  const n = Number(String(v ?? "").replace(/[^\d]/g, ""));
+  return Number.isFinite(n) ? n.toLocaleString("id-ID") : String(v ?? "");
 }

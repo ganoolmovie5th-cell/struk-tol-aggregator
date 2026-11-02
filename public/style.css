@@ -76,29 +76,43 @@ button:disabled { opacity: 0.55; cursor: progress; }
 .op-head h2 { font-size: 17px; margin: 0; letter-spacing: -0.02em; }
 .op-sum { font-size: 13px; color: var(--muted); font-weight: 600; }
 
-/* Astra style */
+/* Astra: replika struk asli */
 .op-block.astra .op-head { background: var(--orange); color: #fff; }
 .op-block.astra .op-sum { color: #ffe3cf; }
-.astra-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; padding: 16px; }
-.astra-struk { border: 1px solid var(--line); border-left: 4px solid var(--orange); border-radius: 10px; padding: 13px 15px; font-size: 13.5px; }
-.astra-struk .no { font-weight: 800; color: var(--orange); letter-spacing: 0.02em; }
-.astra-struk .when { font-size: 12px; color: var(--muted); margin: 2px 0 8px; }
-.astra-struk .gate { font-weight: 600; margin-bottom: 6px; }
-.astra-struk .line { color: #40392f; }
-.astra-struk .line strong { color: var(--ink); }
-.astra-struk .resi { font-size: 11.5px; color: var(--muted); margin-top: 6px; }
+.astra-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; padding: 16px; }
+.astra-struk {
+  border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px;
+  font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #333; background: #fff; line-height: 1.5;
+}
+.astra-struk hr { border: none; border-top: 1px dashed #c9c0b8; margin: 8px 0; }
+.ar-logo { text-align: center; font-size: 14px; }
+.ar-logo .ar-astra { color: var(--orange); font-weight: 800; letter-spacing: 0.04em; }
+.ar-logo .ar-sub { color: #555; font-weight: 600; }
+.ar-ruas { text-align: center; font-size: 10px; letter-spacing: 0.08em; color: #777; }
+.ar-call { text-align: center; font-size: 10px; color: #999; margin-top: 2px; }
+.ar-gerbang { font-weight: 700; font-size: 13px; color: #222; }
+.ar-when { font-size: 11px; color: #666; margin: 2px 0; }
+.ar-gol { font-size: 11px; color: #444; }
+.ar-row { display: flex; justify-content: space-between; gap: 10px; }
+.ar-row span:first-child { color: #666; }
+.ar-row span:last-child { font-weight: 600; color: #222; }
+.ar-msg { text-align: center; font-size: 11px; color: #777; }
+.astra-total { text-align: right; padding: 14px 20px; font-size: 16px; font-weight: 800; border-top: 1px solid var(--line); }
 
-/* Serbaraja style */
+/* Serbaraja: replika struk asli */
 .op-block.serbaraja .op-head { background: var(--sb-blue); color: #fff; }
 .op-block.serbaraja .op-sum { color: #c3ccf0; }
-.sb-wrap { overflow-x: auto; }
+.sb-receipt { padding: 18px; }
+.sb-logo { font-weight: 800; font-size: 20px; color: #c0366f; letter-spacing: -0.01em; margin-bottom: 14px; }
+.sb-meta { display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 16px; font-size: 18px; font-weight: 800; }
+.sb-meta strong { display: block; font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 2px; }
+.sb-meta .bal { color: var(--ok); }
 .sb-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.sb-table thead th { background: var(--sb-blue); color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; white-space: nowrap; }
+.sb-table thead th { background: var(--sb-blue); color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; white-space: nowrap; font-size: 11px; letter-spacing: 0.03em; }
 .sb-table tbody td { padding: 11px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-.sb-table tbody tr:nth-child(even) { background: var(--sb-blue-soft); }
 .sb-table .gol { background: var(--orange-soft); color: var(--orange); font-size: 11.5px; font-weight: 700; padding: 2px 9px; border-radius: 999px; }
 .sb-table .bal { color: var(--ok); font-weight: 700; }
-.sb-card-note { padding: 12px 16px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); }
+.sb-note { padding: 12px 2px 0; font-size: 12px; color: var(--muted); }
 
 .site-foot { max-width: 820px; margin: 0 auto; padding: 28px 20px 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; }
 .site-foot p { margin: 0 0 6px; }
@@ -110,12 +124,14 @@ button:disabled { opacity: 0.55; cursor: progress; }
   .astra-grid { grid-template-columns: 1fr; }
 }
 
-/* print / PDF */
+/* print / PDF — tampil persis seperti struk operator asli */
 @media print {
-  .site-head, .hero, #form, #status, .site-foot, .toolbar, .btn-dl { display: none !important; }
+  .site-head, .hero, #form, #status, .site-foot, .toolbar, .btn-dl, .op-head.print-hide, .op-head { display: none !important; }
   body { background: #fff; }
   main { padding: 0; max-width: 100%; }
-  .results { margin: 0; gap: 16px; }
+  .results { margin: 0; gap: 20px; }
   .op-block { border: none; break-inside: avoid; }
-  .astra-struk, .sb-table tr { break-inside: avoid; }
+  .astra-struk { border: 1px solid #ddd; break-inside: avoid; }
+  .sb-table tr { break-inside: avoid; }
+  .astra-total { border-top: 2px solid #000; }
 }
