@@ -129,9 +129,9 @@ function parseDate(raw) {
   const s = raw.trim();
   const pad = (v) => String(v).padStart(2, "0");
   const iso = (y, mo, d, h, mi) => `${y}-${pad(mo)}-${pad(d)}` + (h != null ? `T${pad(h)}:${pad(mi)}` : "");
-  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/);
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T]+(\d{1,2}):(\d{2}))?/);
   if (m) return iso(m[1], m[2], m[3], m[4], m[5]);
-  m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})(?:[ T](\d{1,2}):(\d{2}))?/);
+  m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})(?:[ T]+(\d{1,2}):(\d{2}))?/);
   if (m) return iso(m[3], m[2], m[1], m[4], m[5]);
   m = s.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})(?:[ ,]+(\d{1,2})[.:](\d{2}))?/);
   if (m && BULAN[m[2].toLowerCase()]) return iso(m[3], BULAN[m[2].toLowerCase()], m[1], m[4], m[5]);
@@ -146,20 +146,20 @@ const pick = (obj, ...keys) => {
 function mapRow(operator, r) {
   if (Array.isArray(r)) return { operator, raw: r };
 
-  // gate: gabung asal -> tujuan kalau ada (Astra pakai gb_asal/gb_tujuan)
-  const asal = pick(r, "gb_asal", "gerbang_asal");
-  const tujuan = pick(r, "gb_tujuan", "gerbang_tujuan");
+  // gate: gabung asal -> tujuan. Astra: gb_asal/gb_tujuan. Serbaraja: GerbangAsal/GerbangTujuan.
+  const asal = pick(r, "gb_asal", "GerbangAsal", "gerbang_asal");
+  const tujuan = pick(r, "gb_tujuan", "GerbangTujuan", "gerbang_tujuan");
   const gate = asal && tujuan ? `${asal} → ${tujuan}`
     : tujuan || asal || pick(r, "gardu", "gerbang", "gate", "ruas");
 
   const mapped = {
-    timestamp: pick(r, "tgl_transaksi", "waktu_entrance", "tanggal", "transaksi", "waktu", "timestamp", "date"),
+    timestamp: pick(r, "tgl_transaksi", "DateTime", "waktu_entrance", "tanggal", "transaksi", "waktu", "timestamp", "date"),
     gate,
-    vehicleClass: pick(r, "gol", "golongan", "vehicleClass"),
-    amount: pick(r, "tarif", "payment", "amount", "nominal"),
-    endingBalance: pick(r, "saldo", "sisa_saldo", "endingBalance", "ending_balance"),
-    receiptNo: pick(r, "struk_no", "resi", "no_resi", "receiptNo", "receipt_numbers"),
-    bank: pick(r, "bank"),
+    vehicleClass: pick(r, "gol", "Golongan", "golongan", "vehicleClass"),
+    amount: pick(r, "tarif", "Tarif", "payment", "amount", "nominal"),
+    endingBalance: pick(r, "saldo", "SisaSaldo", "sisa_saldo", "endingBalance", "ending_balance"),
+    receiptNo: pick(r, "struk_no", "NoResi", "resi", "no_resi", "receiptNo", "receipt_numbers"),
+    bank: pick(r, "bank", "Bank"),
   };
   return { operator, ...mapped, timestampISO: parseDate(mapped.timestamp), raw: r };
 }
