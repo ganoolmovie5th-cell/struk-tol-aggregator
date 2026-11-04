@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://struk-tol.web.id/sitemap.xml
+Sitemap: https://www.struk-tol.web.id/sitemap.xml
