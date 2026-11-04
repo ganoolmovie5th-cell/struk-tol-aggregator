@@ -3,50 +3,68 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>TolStruk — Kumpulkan Struk Tol dari Nomor Kartu</title>
+<title>struk-tol — Kumpulkan Struk Tol dari Nomor Kartu</title>
 <meta name="description" content="Cek dan kumpulkan struk digital transaksi tol (Astra Tol, Serbaraja) cukup dengan nomor kartu e-money. Download struk digital." />
+<meta name="theme-color" content="#e8590c" />
 <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <header class="site-head">
-    <div class="brand">
-      <img src="/logo.svg" width="34" height="34" alt="TolStruk" />
-      <span>Tol<strong>Struk</strong></span>
+    <div class="head-in">
+      <a class="brand" href="/" aria-label="struk-tol beranda">
+        <img src="/logo.svg" width="34" height="34" alt="" />
+        <span>struk<strong>-tol</strong></span>
+      </a>
+      <span class="head-note">Astra Tol · Serbaraja</span>
     </div>
   </header>
 
   <main>
-    <section class="hero">
-      <h1>Kumpulkan struk tol<br />dari satu nomor kartu</h1>
-      <p>Masukkan nomor kartu e-money, pilih operator, dan rentang tanggal. Struk bisa diunduh.</p>
-    </section>
+    <div class="top">
+      <section class="hero">
+        <p class="eyebrow"><span class="dot"></span>Struk digital tol</p>
+        <h1>Semua struk tol,<br /><em>satu nomor kartu.</em></h1>
+        <div class="lane" aria-hidden="true"></div>
+        <p class="lead">Masukkan nomor kartu e-money, pilih operator dan rentang tanggal. Struk langsung tampil dan bisa diunduh.</p>
+        <ul class="points">
+          <li>Tanpa login atau akun</li>
+          <li>Nomor kartu tidak disimpan</li>
+          <li>Hasil sama dengan situs operator</li>
+        </ul>
+      </section>
 
-    <form id="form" class="card">
-      <label>Nomor kartu e-money
-        <input id="card" inputmode="numeric" autocomplete="off" placeholder="16 digit di depan kartu" required />
-      </label>
-      <div class="row">
-        <label>Dari tanggal<input id="from" type="date" required /></label>
-        <label>Sampai tanggal<input id="to" type="date" required /></label>
-      </div>
+      <form id="form" class="card">
+        <label>Nomor kartu e-money
+          <input id="card" inputmode="numeric" autocomplete="off" placeholder="16 digit di depan kartu" required />
+        </label>
+        <div class="row">
+          <label>Dari tanggal<input id="from" type="date" required /></label>
+          <label>Sampai tanggal<input id="to" type="date" required /></label>
+        </div>
 
-      <fieldset class="providers">
-        <legend>Pilih operator</legend>
-        <div id="provider-list" class="provider-list"><span class="loading-prov">Memuat operator...</span></div>
-      </fieldset>
+        <fieldset class="providers">
+          <legend>Pilih operator</legend>
+          <div id="provider-list" class="provider-list"><span class="loading-prov">Memuat operator...</span></div>
+        </fieldset>
 
-      <button id="submit" type="submit">Cari Struk</button>
-      <p class="hint">Hanya untuk kartu milikmu sendiri. TolStruk tidak menyimpan nomor kartu atau datamu.</p>
-    </form>
+        <button id="submit" type="submit">Cari Struk</button>
+        <p class="hint">Hanya untuk kartu milikmu sendiri. struk-tol tidak menyimpan nomor kartu atau datamu.</p>
+      </form>
+    </div>
 
-    <section id="status" class="status" hidden></section>
+    <section id="status" class="status" role="status" aria-live="polite" hidden></section>
     <section id="results" class="results"></section>
   </main>
 
   <footer class="site-foot">
-    <p>TolStruk menggunakan halaman struk publik tiap operator. Cakupan: transaksi di ruas tol yang didukung saja.</p>
-    <p class="ops" id="ops-note"></p>
+    <div class="foot-in">
+      <p>struk-tol menggunakan halaman struk publik tiap operator. Cakupan: transaksi di ruas tol yang didukung saja.</p>
+      <p class="ops" id="ops-note"></p>
+    </div>
   </footer>
 
   <script src="/app.js"></script>

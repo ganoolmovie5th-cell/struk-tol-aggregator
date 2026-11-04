@@ -1,9 +1,11 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="48" height="48" rx="11" fill="#E65100"/>
+  <rect width="48" height="48" rx="12" fill="#E8590C"/>
+  <!-- jalur tol melengkung -->
+  <path d="M6 30c3-9 11-15 20-15" stroke="#FFD9B8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
   <!-- struk/receipt -->
-  <path d="M15 11h18a2 2 0 0 1 2 2v24l-3-2-3 2-3-2-3 2-3-2-3 2-3-2-3 2V13a2 2 0 0 1 2-2Z" fill="#fff"/>
+  <path d="M17 10h14a1.6 1.6 0 0 1 1.6 1.6v24.4l-2.6-1.8-2.6 1.8-2.6-1.8-2.6 1.8-2.6-1.8-2.6 1.8V11.6A1.6 1.6 0 0 1 17 10Z" fill="#fff"/>
   <!-- garis teks struk -->
-  <rect x="18" y="17" width="12" height="2.2" rx="1.1" fill="#E65100"/>
-  <rect x="18" y="22" width="12" height="2.2" rx="1.1" fill="#FFB074"/>
-  <rect x="18" y="27" width="8" height="2.2" rx="1.1" fill="#FFB074"/>
+  <rect x="19.6" y="16" width="8.8" height="2" rx="1" fill="#E8590C"/>
+  <rect x="19.6" y="20.4" width="8.8" height="2" rx="1" fill="#FFCBA0"/>
+  <rect x="19.6" y="24.8" width="5.6" height="2" rx="1" fill="#FFCBA0"/>
 </svg>

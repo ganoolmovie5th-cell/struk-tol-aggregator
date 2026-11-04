@@ -83,7 +83,7 @@ form.addEventListener("submit", async (e) => {
 
   btn.disabled = true;
   resultsEl.innerHTML = "";
-  showStatus("Mencari struk...");
+  showStatus("Mencari struk...", false, true);
 
   try {
     const url = `/api/struk?card=${encodeURIComponent(card)}&from=${from}&to=${to}&providers=${chosen.join(",")}`;
@@ -98,10 +98,11 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-function showStatus(msg, isError) {
+function showStatus(msg, isError, busy) {
   statusEl.hidden = false;
   statusEl.textContent = msg;
   statusEl.classList.toggle("err", !!isError);
+  statusEl.classList.toggle("busy", !!busy);
 }
 
 function render({ transactions, perOperator }, card) {

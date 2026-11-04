@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="public/logo.svg" width="64" alt="TolStruk" />
+  <img src="public/logo.svg" width="64" alt="struk-tol" />
 </p>
 
-<h1 align="center">TolStruk</h1>
+<h1 align="center">struk-tol</h1>
 
 Kumpulkan struk digital transaksi tol dari portal publik beberapa operator, lewat satu input nomor kartu + rentang tanggal. Cek transaksi tol **kartumu sendiri** dari banyak operator sekaligus.
 
