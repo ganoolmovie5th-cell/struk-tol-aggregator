@@ -34,6 +34,23 @@ function tanggalIndo(isoStr) {
   return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()} pukul ${jam}`;
 }
 
+// logo resmi per operator (ada asetnya). id lain -> fallback dot warna.
+const OP_LOGO = {
+  astra: "/logos/astra.png",
+  serbaraja: "/logos/serbaraja.png",
+  jtd: "/logos/jtd.svg",
+  bsd: "/logos/bsd.png",
+  makassar: "/logos/makassar.png",
+  citra: "/logos/citra.png",
+  jlb: "/logos/jlb.png",
+};
+function opMark(p) {
+  const src = OP_LOGO[p.id];
+  return src
+    ? `<img class="op-logo" src="${src}" alt="${esc(p.name)}" loading="lazy" />`
+    : `<span class="op-dot" aria-hidden="true"></span>`;
+}
+
 // ---- load daftar provider -> render checkbox + opsi "Semua"
 loadProviders();
 async function loadProviders() {
@@ -48,7 +65,7 @@ async function loadProviders() {
       </label>
       ${providers.map((p) => `
         <label class="prov op-${esc(p.id)} ${p.enabled ? "" : "disabled"}">
-          <span class="op-dot" aria-hidden="true"></span>
+          ${opMark(p)}
           <input type="checkbox" class="prov-one" value="${p.id}" ${p.enabled ? "checked" : "disabled"} />
           <span>${esc(p.name)}</span>
           ${p.enabled ? "" : '<em>segera</em>'}
@@ -149,19 +166,23 @@ function genericCards(opId, title, rows, total, card) {
       <div class="op-sum">${rows.length} transaksi · Total ${rupiah(total)}</div>
     </div>
     <div class="astra-grid">
-      ${rows.map((t) => genericReceipt(t, title)).join("")}
+      ${rows.map((t) => genericReceipt(t, title, opId)).join("")}
     </div>
     <div class="astra-total">Total Transaksi : ${rupiah(total)}</div>
   </section>`;
 }
 
-function genericReceipt(t, title) {
+function genericReceipt(t, title, opId) {
   const r = t.raw || {};
   const gerbang = String(t.gate || "-").toUpperCase();
   const noKartu = r.no_kartu || r.NoKartu || r.card_number || r.kartu || "";
+  const logo = OP_LOGO[opId];
+  const head = logo
+    ? `<div class="ar-logo"><img src="${logo}" alt="${esc(title)}" /></div>`
+    : `<div class="ar-ruas">${esc(title)}</div>`;
   return `
     <article class="astra-struk">
-      <div class="ar-ruas">${esc(title)}</div>
+      ${head}
       <hr/>
       <div class="ar-gerbang">GERBANG ${esc(gerbang)}</div>
       <div class="ar-when">${esc(tanggalIndo(t.timestampISO) || fmtTime(t))}</div>

@@ -95,7 +95,11 @@ input:focus { outline: none; border-color: var(--orange); background: #fff; box-
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
 /* kartu uang elektronik yang didukung */
-.card-brands { display: flex; flex-wrap: wrap; gap: 7px; margin-top: -8px; }
+.card-brands { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: -8px; }
+.brand-logo {
+  height: 22px; width: auto; display: block;
+  border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; background: #fff;
+}
 .brand-chip {
   font-size: 11.5px; font-weight: 800; letter-spacing: 0.01em;
   padding: 4px 11px; border-radius: 6px; color: #fff; line-height: 1.4;
@@ -128,7 +132,11 @@ input:focus { outline: none; border-color: var(--orange); background: #fff; box-
 .prov.disabled em { font-style: normal; font-size: 11px; font-weight: 700; background: var(--line); color: var(--muted); padding: 1px 8px; border-radius: 999px; }
 .loading-prov { font-size: 13px; color: var(--muted); }
 
-/* dot warna sebagai identitas tiap operator tol */
+/* logo resmi operator di picker */
+.op-logo { flex: none; height: 16px; width: auto; max-width: 54px; object-fit: contain; display: block; }
+.prov.disabled .op-logo { filter: grayscale(1); opacity: 0.8; }
+
+/* dot warna sebagai identitas tiap operator tol (fallback) */
 .op-dot { flex: none; width: 10px; height: 10px; border-radius: 3px; background: var(--muted); }
 .prov.op-astra     .op-dot { background: #e8590c; }
 .prov.op-serbaraja .op-dot { background: #c0366f; }
