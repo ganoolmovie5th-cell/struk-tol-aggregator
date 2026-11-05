@@ -94,25 +94,33 @@ input:hover { border-color: #d6d0c8; }
 input:focus { outline: none; border-color: var(--orange); background: #fff; box-shadow: 0 0 0 4px var(--orange-ring); }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-/* kartu uang elektronik yang didukung */
-.card-brands { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: -8px; }
-.brand-logo {
-  height: 22px; width: auto; display: block;
-  border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; background: #fff;
+/* kartu uang elektronik yang didukung — tile seragam */
+.card-brands {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: -4px;
 }
+.brand-logo {
+  width: 100%; height: 38px; display: block; object-fit: contain; padding: 7px 8px;
+  border: 1px solid var(--line); border-radius: 9px; background: #fff;
+  box-shadow: 0 1px 2px rgba(28, 25, 23, 0.04);
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
+}
+.brand-logo:hover { border-color: #d6d0c8; box-shadow: 0 6px 14px -8px rgba(28,25,23,0.28); transform: translateY(-1px); }
 
 
 
 /* provider chips */
 .providers { border: none; padding: 0; margin: 0; min-width: 0; }
 .providers legend { font-size: 13px; font-weight: 700; color: #57534e; padding: 0 0 9px; }
-.provider-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.provider-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.prov.all { grid-column: 1 / -1; justify-content: center; background: var(--orange-soft); border-color: transparent; }
 .prov {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 9px 15px; border: 1.5px solid var(--line); border-radius: 999px; background: #fff;
-  font-size: 14px; font-weight: 600; color: var(--ink); cursor: pointer; user-select: none;
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 13px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff;
+  font-size: 13.5px; font-weight: 600; color: var(--ink); cursor: pointer; user-select: none;
   transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.1s;
 }
+.prov > span:not(.op-dot) { margin-right: auto; }
+.prov .prov-one { order: 3; }
 .prov:hover { border-color: #d6d0c8; }
 .prov:active { transform: scale(0.97); }
 .prov input { accent-color: var(--orange); width: 16px; height: 16px; margin: 0; }
@@ -124,7 +132,7 @@ input:focus { outline: none; border-color: var(--orange); background: #fff; box-
 .loading-prov { font-size: 13px; color: var(--muted); }
 
 /* logo resmi operator di picker */
-.op-logo { flex: none; height: 16px; width: auto; max-width: 54px; object-fit: contain; display: block; }
+.op-logo { flex: none; height: 20px; width: auto; max-width: 60px; object-fit: contain; display: block; }
 .prov.disabled .op-logo { filter: grayscale(1); opacity: 0.8; }
 
 /* dot warna sebagai identitas tiap operator tol (fallback) */
