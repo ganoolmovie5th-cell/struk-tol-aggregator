@@ -10,8 +10,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-PPRZLXHN');</script>
 <!-- End Google Tag Manager -->
-<title>struk-tol — Kumpulkan Struk Tol dari Nomor Kartu</title>
-<meta name="description" content="Cek dan kumpulkan struk digital transaksi tol (Astra Tol, Serbaraja) cukup dengan nomor kartu e-money. Download struk digital." />
+<title>struk-tol — Kumpulkan Struk Tol dari Nomor Kartu Uang Elektronik</title>
+<meta name="description" content="Cek dan kumpulkan struk digital transaksi tol cukup dengan nomor kartu uang elektronik — e-Money, Flazz, BRIZZI, TapCash, JakCard. Download struk digital." />
 <meta name="theme-color" content="#e8590c" />
 <link rel="icon" type="image/svg+xml" href="/logo.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,7 +29,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <img src="/logo.svg" width="34" height="34" alt="" />
         <span>struk<strong>-tol</strong></span>
       </a>
-      <span class="head-note">Astra Tol · Serbaraja</span>
+      <span class="head-note">Semua operator tol &amp; uang elektronik</span>
     </div>
   </header>
 
@@ -39,7 +39,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <p class="eyebrow"><span class="dot"></span>Struk digital tol</p>
         <h1>Semua struk tol,<br /><em>satu nomor kartu.</em></h1>
         <div class="lane" aria-hidden="true"></div>
-        <p class="lead">Masukkan nomor kartu e-money, pilih operator dan rentang tanggal. Struk langsung tampil dan bisa diunduh.</p>
+        <p class="lead">Masukkan nomor kartu uang elektronik — e-Money, Flazz, BRIZZI, atau TapCash — lalu pilih operator dan rentang tanggal. Struk langsung tampil dan bisa diunduh.</p>
         <ul class="points">
           <li>Tanpa login atau akun</li>
           <li>Nomor kartu tidak disimpan</li>
@@ -48,9 +48,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </section>
 
       <form id="form" class="card">
-        <label>Nomor kartu e-money
-          <input id="card" inputmode="numeric" autocomplete="off" placeholder="16 digit di depan kartu" required />
+        <label>Nomor kartu uang elektronik
+          <input id="card" inputmode="numeric" autocomplete="off" placeholder="16 digit di depan kartu (e-Money / Flazz / BRIZZI / TapCash)" required />
         </label>
+        <div class="card-brands" aria-label="Kartu uang elektronik yang didukung">
+          <span class="brand-chip brand-emoney">e-Money</span>
+          <span class="brand-chip brand-flazz">Flazz</span>
+          <span class="brand-chip brand-brizzi">BRIZZI</span>
+          <span class="brand-chip brand-tapcash">TapCash</span>
+          <span class="brand-chip brand-jakcard">JakCard</span>
+          <span class="brand-chip brand-blink">Blink</span>
+        </div>
         <div class="row">
           <label>Dari tanggal<input id="from" type="date" required /></label>
           <label>Sampai tanggal<input id="to" type="date" required /></label>

@@ -40,7 +40,7 @@ const OPERATORS = [
   {
     name: "JTD",
     id: "jtd",
-    enabled: false,
+    enabled: true,
     async fetchStruk(card, from, to) {
       const url = new URL("https://bc01.jtd.co.id/api/jlp/beranda/struk");
       url.searchParams.set("noKartu", card);
@@ -56,7 +56,7 @@ const OPERATORS = [
   {
     name: "BSD Tol",
     id: "bsd",
-    enabled: false,
+    enabled: true,
     async fetchStruk(card, from, to) {
       const url = new URL("https://bsdtol.com/struk");
       url.searchParams.set("kartu", card);
@@ -74,7 +74,7 @@ const OPERATORS = [
   {
     name: "Tol Makassar",
     id: "makassar",
-    enabled: false,
+    enabled: true,
     async fetchStruk(card, from, to) {
       const url = new URL("https://tolmakassar.com/struk");
       url.searchParams.set("kartu", card);
@@ -90,7 +90,7 @@ const OPERATORS = [
   {
     name: "Citra Persada",
     id: "citra",
-    enabled: false,
+    enabled: true,
     async fetchStruk(card, from, to) {
       const res = await f("https://struk.citrapersada.co.id/getStruk", {
         method: "POST",
@@ -105,7 +105,7 @@ const OPERATORS = [
   {
     name: "JLB",
     id: "jlb",
-    enabled: false,
+    enabled: true,
     async fetchStruk(card, from, to) {
       const base = "https://strukdigital.jlbjorrw1.com/struk";
       const pageRes = await f(base);
@@ -124,6 +124,12 @@ const OPERATORS = [
       if (!res.ok) throw new Error(`JLB HTTP ${res.status}`);
       return parseJlbRows(await res.text());
     },
+  },
+  {
+    name: "CTP Tollways",
+    id: "ctp",
+    enabled: false,
+    async fetchStruk() { throw new Error("CTP Tollways: belum tersedia"); },
   },
 ];
 

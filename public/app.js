@@ -47,7 +47,8 @@ async function loadProviders() {
         <span>Semua</span>
       </label>
       ${providers.map((p) => `
-        <label class="prov ${p.enabled ? "" : "disabled"}">
+        <label class="prov op-${esc(p.id)} ${p.enabled ? "" : "disabled"}">
+          <span class="op-dot" aria-hidden="true"></span>
           <input type="checkbox" class="prov-one" value="${p.id}" ${p.enabled ? "checked" : "disabled"} />
           <span>${esc(p.name)}</span>
           ${p.enabled ? "" : '<em>segera</em>'}
@@ -135,7 +136,43 @@ function blockFor(opId, rows, card) {
   const total = rows.reduce((s, r) => s + (Number(String(r.amount).replace(/[^\d]/g, "")) || 0), 0);
 
   if (opId === "serbaraja") return serbarajaTable(title, rows, total, card);
-  return astraCards(title, rows, total, card);
+  if (opId === "astra") return astraCards(title, rows, total, card);
+  return genericCards(opId, title, rows, total, card);
+}
+
+// --- Operator lain: kartu struk generik dari field ternormalisasi
+function genericCards(opId, title, rows, total, card) {
+  return `
+  <section class="op-block generic op-${esc(opId)}">
+    <div class="op-head">
+      <h2>${esc(title)}</h2>
+      <div class="op-sum">${rows.length} transaksi · Total ${rupiah(total)}</div>
+    </div>
+    <div class="astra-grid">
+      ${rows.map((t) => genericReceipt(t, title)).join("")}
+    </div>
+    <div class="astra-total">Total Transaksi : ${rupiah(total)}</div>
+  </section>`;
+}
+
+function genericReceipt(t, title) {
+  const r = t.raw || {};
+  const gerbang = String(t.gate || "-").toUpperCase();
+  const noKartu = r.no_kartu || r.NoKartu || r.card_number || r.kartu || "";
+  return `
+    <article class="astra-struk">
+      <div class="ar-ruas">${esc(title)}</div>
+      <hr/>
+      <div class="ar-gerbang">GERBANG ${esc(gerbang)}</div>
+      <div class="ar-when">${esc(tanggalIndo(t.timestampISO) || fmtTime(t))}</div>
+      <div class="ar-gol">Golongan ${esc(t.vehicleClass || "-")}</div>
+      <hr/>
+      <div class="ar-row"><span>Bank</span><span>${esc(t.bank || "-")}</span></div>
+      <div class="ar-row"><span>No. Kartu</span><span>${esc(fmtCardNo(noKartu) || "-")}</span></div>
+      <div class="ar-row"><span>Tarif</span><span>Rp. ${esc(formatNum(t.amount))}</span></div>
+      <div class="ar-row"><span>Sisa Saldo</span><span>Rp. ${esc(formatNum(t.endingBalance))}</span></div>
+      ${t.receiptNo ? `<div class="ar-row"><span>No. Resi</span><span>${esc(t.receiptNo)}</span></div>` : ""}
+    </article>`;
 }
 
 // format No. Kartu 7546-0100-1064-4875

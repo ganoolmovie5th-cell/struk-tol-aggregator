@@ -94,6 +94,20 @@ input:hover { border-color: #d6d0c8; }
 input:focus { outline: none; border-color: var(--orange); background: #fff; box-shadow: 0 0 0 4px var(--orange-ring); }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
+/* kartu uang elektronik yang didukung */
+.card-brands { display: flex; flex-wrap: wrap; gap: 7px; margin-top: -8px; }
+.brand-chip {
+  font-size: 11.5px; font-weight: 800; letter-spacing: 0.01em;
+  padding: 4px 11px; border-radius: 6px; color: #fff; line-height: 1.4;
+  box-shadow: 0 1px 2px rgba(28, 25, 23, 0.12);
+}
+.brand-emoney  { background: #ffd200; color: #003d79; }
+.brand-flazz   { background: #0060af; }
+.brand-brizzi  { background: #00529c; }
+.brand-tapcash { background: #ee7203; }
+.brand-jakcard { background: #c8102e; }
+.brand-blink   { background: #009ca6; }
+
 /* provider chips */
 .providers { border: none; padding: 0; margin: 0; min-width: 0; }
 .providers legend { font-size: 13px; font-weight: 700; color: #57534e; padding: 0 0 9px; }
@@ -113,6 +127,17 @@ input:focus { outline: none; border-color: var(--orange); background: #fff; box-
 .prov.disabled:active { transform: none; }
 .prov.disabled em { font-style: normal; font-size: 11px; font-weight: 700; background: var(--line); color: var(--muted); padding: 1px 8px; border-radius: 999px; }
 .loading-prov { font-size: 13px; color: var(--muted); }
+
+/* dot warna sebagai identitas tiap operator tol */
+.op-dot { flex: none; width: 10px; height: 10px; border-radius: 3px; background: var(--muted); }
+.prov.op-astra     .op-dot { background: #e8590c; }
+.prov.op-serbaraja .op-dot { background: #c0366f; }
+.prov.op-jtd       .op-dot { background: #1b7a43; }
+.prov.op-bsd       .op-dot { background: #00529c; }
+.prov.op-makassar  .op-dot { background: #0aa2b8; }
+.prov.op-citra     .op-dot { background: #7c3aed; }
+.prov.op-jlb       .op-dot { background: #d4a017; }
+.prov.op-ctp       .op-dot { background: #334155; }
 
 /* tombol */
 button {
@@ -166,6 +191,11 @@ button:disabled { opacity: 0.6; cursor: progress; transform: none; filter: none;
 .op-head { padding: 16px 20px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .op-head h2 { font-size: 17px; margin: 0; letter-spacing: -0.02em; font-weight: 800; }
 .op-sum { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+/* operator lain: header netral */
+.op-block.generic .op-head { background: linear-gradient(180deg, #2b2a28, #1c1917); color: #fff; }
+.op-block.generic .op-sum { color: #cfc9c2; }
+.op-block.generic .ar-ruas { font-size: 13px; font-weight: 800; letter-spacing: 0.04em; color: #333; text-align: center; margin-top: 2px; }
 
 /* Astra: replika struk asli */
 .op-block.astra .op-head { background: linear-gradient(180deg, #ee6210, #e04e07); color: #fff; }
